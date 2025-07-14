@@ -1,6 +1,7 @@
 package address
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -24,6 +25,9 @@ type ViaCep struct {
 }
 
 func GetCep(cep string) (*ViaCep, error) {
+	// Desabilitar a verificação do certificado SSL
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+
 	_, err := checkCep(cep)
 	if err != nil {
 		fmt.Errorf("Error: %w", err)

@@ -1,6 +1,7 @@
 package weather
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -63,9 +64,12 @@ type Temperature struct {
 }
 
 func GetWeather(city string) (*Temperature, error) {
-	config, _ := configs.LoadConfig("../.")
+	// Desabilitar a verificação do certificado SSL
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
-	resp, error := http.Get("http://api.weatherapi.com/v1/current.json?key=" + config.Weatherapi_key + "&q=" + city + "&aqi=no")
+	config, _ := configs.LoadConfig()
+
+	resp, error := http.Get("http://api.weatherapi.com/v1/current.json?key=" + config.WeatherapiKey + "&q=" + city + "&aqi=no")
 	if error != nil {
 		return nil, error
 	}

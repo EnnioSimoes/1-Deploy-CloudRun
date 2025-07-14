@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
 	"encoding/json"
@@ -23,6 +24,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{"error": "invalid zipcode"})
+		log.Println("Error getting address:", err)
 		return
 	}
 
@@ -30,6 +32,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{"error": "can not find zipcode"})
+		log.Println("Error: Address not found for zipcode:", cep)
 		return
 	}
 
