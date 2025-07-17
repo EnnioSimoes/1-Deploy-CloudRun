@@ -21,23 +21,24 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	addr, err := address.GetCep(cep)
 	if err != nil {
+		log.Println("Error getting address:", err)
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{"error": "invalid zipcode"})
-		log.Println("Error getting address:", err)
 		return
 	}
 
 	if addr.Cep == "" {
+		log.Println("Error: Address not found for zipcode:", cep)
 		w.WriteHeader(http.StatusNotFound)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{"error": "can not find zipcode"})
-		log.Println("Error: Address not found for zipcode:", cep)
 		return
 	}
 
 	temperature, err := weather.GetWeather(addr.Localidade)
 	if err != nil {
+		log.Println("Error getting temperature:", err)
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{"error": "internal server error"})

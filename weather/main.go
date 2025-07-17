@@ -3,6 +3,7 @@ package weather
 import (
 	"crypto/tls"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 
@@ -86,6 +87,10 @@ func GetWeather(city string) (*Temperature, error) {
 	error = json.Unmarshal(body, &w)
 	if error != nil {
 		return nil, error
+	}
+
+	if w.Current.TempC == 0 {
+		return nil, fmt.Errorf("could not retrieve temperature for city: %s", city)
 	}
 
 	t := formatTemparature(w.Current.TempC)
