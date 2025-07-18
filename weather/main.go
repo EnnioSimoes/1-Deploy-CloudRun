@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 
 	"github.com/EnnioSimoes/1-Deploy-CloudRun/configs"
 )
@@ -70,7 +71,10 @@ func GetWeather(city string) (*Temperature, error) {
 
 	config, _ := configs.LoadConfig()
 
-	resp, error := http.Get("http://api.weatherapi.com/v1/current.json?key=" + config.WeatherapiKey + "&q=" + city + "&aqi=no")
+	city = url.QueryEscape(city)
+	// log.Println("https://api.weatherapi.com/v1/current.json?key=" + config.WeatherapiKey + "&q=" + city + "&aqi=no")
+
+	resp, error := http.Get("https://api.weatherapi.com/v1/current.json?key=" + config.WeatherapiKey + "&q=" + city + "&aqi=no")
 	if error != nil {
 		return nil, error
 	}
